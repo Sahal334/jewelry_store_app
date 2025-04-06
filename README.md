@@ -17,3 +17,6 @@ samples, guidance on mobile development, and a full API reference.
 
 created using flutter and hive 
 featurs are add delete,edit,search and filter and sort products 
+
+
+apk => app-release.apk
