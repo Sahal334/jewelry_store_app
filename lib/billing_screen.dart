@@ -68,7 +68,6 @@ class _BillingScreenState extends State<BillingScreen> {
   }
 
   void _addProductToInvoice(Product product) {
-    // Check if product has sufficient stock
     if (product.stockQuantity <= 0) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('${product.name} is out of stock')),
@@ -76,11 +75,9 @@ class _BillingScreenState extends State<BillingScreen> {
       return;
     }
     
-    // Check if product is already in the invoice
     int existingIndex = _selectedItems.indexWhere((item) => item.productId == product.id);
     
     if (existingIndex >= 0) {
-      // Check if there's enough stock for the increased quantity
       InvoiceItem existingItem = _selectedItems[existingIndex];
       if (existingItem.quantity + 1 > product.stockQuantity) {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -89,7 +86,6 @@ class _BillingScreenState extends State<BillingScreen> {
         return;
       }
       
-      // Update quantity of existing item
       setState(() {
         final updatedItem = InvoiceItem(
           productId: existingItem.productId,
@@ -104,7 +100,6 @@ class _BillingScreenState extends State<BillingScreen> {
         _selectedItems[existingIndex] = updatedItem;
       });
     } else {
-      // Add new item
       final double itemSubtotal = product.price * (1 - product.discount / 100) * (1 + product.tax / 100);
       
       setState(() {
@@ -131,7 +126,6 @@ class _BillingScreenState extends State<BillingScreen> {
         _selectedItems.removeAt(index);
       });
     } else {
-      // Get the product to check stock
       final item = _selectedItems[index];
       final product = _allProducts.firstWhere((p) => p.id == item.productId);
       
@@ -229,14 +223,11 @@ class _BillingScreenState extends State<BillingScreen> {
       notes: _notesController.text.isNotEmpty ? _notesController.text : null,
     );
     
-    // Save invoice to Hive
     await HiveService.saveInvoice(invoice);
     
-    // Generate PDF with error handling
     try {
       final pdfFile = await PdfService.generateInvoice(invoice);
       
-      // Show preview
       if (mounted) {
         Navigator.push(
           context,
@@ -244,7 +235,6 @@ class _BillingScreenState extends State<BillingScreen> {
             builder: (context) => InvoicePreviewScreen(invoice: invoice, pdfFile: pdfFile),
           ),
         ).then((_) {
-          // Clear bill after successful generation
           _clearBill();
         });
       }
@@ -272,7 +262,6 @@ class _BillingScreenState extends State<BillingScreen> {
       ),
       body: Row(
         children: [
-          // Products selection - Left side
           Expanded(
             flex: 3,
             child: Column(
@@ -381,14 +370,12 @@ class _BillingScreenState extends State<BillingScreen> {
             ),
           ),
           
-          // Vertical divider
           VerticalDivider(
             width: 1,
             thickness: 1,
             color: Colors.grey[300],
           ),
           
-          // Invoice details - Right side
           Expanded(
             flex: 2,
             child: Column(
@@ -543,7 +530,6 @@ class _BillingScreenState extends State<BillingScreen> {
   }
 }
 
-// Add the missing BillingItem widget
 class BillingItem extends StatelessWidget {
   final InvoiceItem item;
   final Function(int) onQuantityChanged;

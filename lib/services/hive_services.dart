@@ -8,22 +8,18 @@ class HiveService {
   static const String productBoxName = 'products';
   static const String invoiceBoxName = 'invoices';
 
-  // Initialize Hive
   static Future<void> init() async {
     final appDocumentDir = await getApplicationDocumentsDirectory();
     await Hive.initFlutter(appDocumentDir.path);
     
-    // Register adapters
     Hive.registerAdapter(ProductAdapter());
     Hive.registerAdapter(InvoiceAdapter());
     Hive.registerAdapter(InvoiceItemAdapter());
     
-    // Open boxes
     await Hive.openBox<Product>(productBoxName);
     await Hive.openBox<Invoice>(invoiceBoxName);
   }
 
-  // Product CRUD Operations
   static Future<String> addProduct(Product product) async {
     final box = Hive.box<Product>(productBoxName);
     await box.put(product.id, product);
@@ -50,7 +46,6 @@ class HiveService {
     return box.get(id);
   }
 
-  // Invoice Operations
   static Future<String> saveInvoice(Invoice invoice) async {
     final box = Hive.box<Invoice>(invoiceBoxName);
     await box.put(invoice.id, invoice);

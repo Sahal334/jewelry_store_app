@@ -98,7 +98,7 @@ class _ProductAddEditScreenState extends State<ProductAddEditScreen> {
         await HiveService.updateProduct(product);
       }
 
-      // Return true to indicate success
+
       Navigator.pop(context, true);
     }
   }
